@@ -25,9 +25,10 @@ const memoryDb = {
       rows.push(r);
       return r;
     },
-    async update({ where, data }: { where: { id: string }; data: { status: string } }) {
+    async update({ where, data }: { where: { id: string }; data: { status?: string; message?: string } }) {
       const r = rows.find((x) => x.id === where.id)!;
-      r.status = data.status; r.updatedAt = new Date();
+      if (data.status) r.status = data.status;
+      if (data.message) r.message = data.message; r.updatedAt = new Date();
       return r;
     },
   },

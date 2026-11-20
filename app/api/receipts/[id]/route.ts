@@ -17,11 +17,24 @@ export async function GET(_: Request, { params }: { params: { id: string } }) {
 export async function PATCH(req: Request, { params }: { params: { id: string } }) {
   const prisma = await db();
   const body = await req.json().catch(() => ({}));
-  if (!STATUSES.includes(body.status)) {
-    return NextResponse.json({ error: `status must be one of ${STATUSES.join(", ")}` }, { status: 400 });
+  const data: { status?: string; message?: string } = {};
+  if (body.status !== undefined) {
+    if (!STATUSES.includes(body.status)) {
+      return NextResponse.json({ error: `status must be one of ${STATUSES.join(", ")}` }, { status: 400 });
+    }
+    data.status = body.status;
+  }
+  if (body.message !== undefined) {
+    if (typeof body.message !== "string" || !body.message.trim()) {
+      return NextResponse.json({ error: "message must be a non-empty string" }, { status: 400 });
+    }
+    data.message = body.message.trim().slice(0, 200);
+  }
+  if (!Object.keys(data).length) {
+    return NextResponse.json({ error: "Provide status and/or message" }, { status: 400 });
   }
   const exists = await prisma.receipt.findUnique({ where: { id: params.id } });
   if (!exists) return NextResponse.json({ error: "Not found" }, { status: 404 });
-  const r = await prisma.receipt.update({ where: { id: params.id }, data: { status: body.status } });
+  const r = await prisma.receipt.update({ where: { id: params.id }, data });
   return NextResponse.json(pick(r));
 }
