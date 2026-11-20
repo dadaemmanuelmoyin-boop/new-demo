@@ -1,11 +1,17 @@
 # Receipt status app
 
+Next.js + Prisma + Postgres.
+
+## Local
+    cp .env.example .env     # put a real Postgres URL in it
     npm install
     npx prisma db push
     npm run dev
 
-Open http://localhost:3000 (creates a demo receipt and redirects to /receipt/[id]).
-Tap the pill to toggle PENDING <-> COMPLETED; other open tabs update within 3s.
+## Deploy on Vercel
+1. Project -> Storage -> create a Postgres (Neon) database and connect it to the project.
+2. Make sure the env var DATABASE_URL exists (Settings -> Environment Variables).
+3. Redeploy. The build creates the tables automatically.
 
 API
 - POST  /api/receipts            body: {"message"?: string} -> {id, url}

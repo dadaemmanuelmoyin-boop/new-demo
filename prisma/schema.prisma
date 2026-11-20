@@ -3,11 +3,11 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-// SQLite has no native enums; status is validated in the API (PENDING | COMPLETED | FAILED).
+// status is validated in the API (PENDING | COMPLETED | FAILED).
 model Receipt {
   id        String   @id @default(uuid())
   message   String   @default("hi this is a demo app")
