@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { db } from "@/lib/prisma";
 
 export async function POST(req: Request) {
+  const prisma = await db();
   const body = await req.json().catch(() => ({}));
   const message =
     typeof body.message === "string" && body.message.trim()
