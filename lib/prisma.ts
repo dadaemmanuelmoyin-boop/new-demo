@@ -11,11 +11,31 @@ if (process.env.NODE_ENV !== "production") g.prisma = prisma;
 export const STATUSES = ["PENDING", "COMPLETED", "FAILED"] as const;
 export type Status = (typeof STATUSES)[number];
 
+type Row = { id: string; message: string; status: string; createdAt: Date; updatedAt: Date };
+const store = (globalThis as unknown as { rows?: Row[] });
+const rows: Row[] = (store.rows ??= []);
+// Demo fallback used only when no DATABASE_URL is configured (data is not persistent).
+const memoryDb = {
+  receipt: {
+    async findFirst(_?: unknown) { return rows[0] ?? null; },
+    async findUnique({ where }: { where: { id: string } }) { return rows.find((r) => r.id === where.id) ?? null; },
+    async create({ data }: { data: { message?: string } }) {
+      const now = new Date();
+      const r: Row = { id: crypto.randomUUID(), message: data.message ?? "hi this is a demo app", status: "PENDING", createdAt: now, updatedAt: now };
+      rows.push(r);
+      return r;
+    },
+    async update({ where, data }: { where: { id: string }; data: { status: string } }) {
+      const r = rows.find((x) => x.id === where.id)!;
+      r.status = data.status; r.updatedAt = new Date();
+      return r;
+    },
+  },
+} as unknown as PrismaClient;
+
 /** Returns the client once the Receipt table exists (created on first use). */
 export async function db() {
-  if (!process.env.DATABASE_URL) {
-    throw new Error("DATABASE_URL is not set. Add a Postgres database to the Vercel project and redeploy.");
-  }
+  if (!process.env.DATABASE_URL) return memoryDb;
   if (!g.ready) {
     g.ready = prisma
       .$executeRawUnsafe(
