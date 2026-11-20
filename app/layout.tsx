@@ -1,7 +1,10 @@
 import "./globals.css";
 import type { Metadata, Viewport } from "next";
 
-export const metadata: Metadata = { title: "Receipt" };
+export const metadata: Metadata = {
+  title: "Receipt",
+  appleWebApp: { capable: true, title: "Receipt", statusBarStyle: "default" },
+};
 export const viewport: Viewport = { width: "device-width", initialScale: 1 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

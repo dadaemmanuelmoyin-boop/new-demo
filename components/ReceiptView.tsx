@@ -65,32 +65,18 @@ export default function ReceiptView({ initial }: { initial: Receipt }) {
   return (
     <main className="mx-auto flex h-[100dvh] w-full max-w-[430px] flex-col justify-between overflow-hidden bg-white px-6 pb-6 pt-[max(24px,env(safe-area-inset-top))] md:border-x md:border-neutral-200 md:shadow-lg">
       <section className="mt-9 min-h-0">
-        <div className="flex items-start justify-between">
-          <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#5CD65C]">
-            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M5 12.5l4.5 4.5L19 7.5" />
-            </svg>
-          </div>
-          <button
-            onClick={onCircle}
-            disabled={saving}
-            aria-label={editing ? "Save" : "Edit"}
-            className={`flex h-11 w-11 items-center justify-center rounded-full border-2 transition-colors ${
-              editing ? "border-[#18D458] bg-[#18D458]" : "border-neutral-300 bg-white"
-            }`}
-          >
-            {editing ? (
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M5 12.5l4.5 4.5L19 7.5" />
-              </svg>
-            ) : (
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#000" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 20h9" />
-                <path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4 12.5-12.5z" />
-              </svg>
-            )}
-          </button>
-        </div>
+        <button
+          onClick={onCircle}
+          disabled={saving}
+          aria-label={editing ? "Save" : "Edit"}
+          className={`flex h-14 w-14 items-center justify-center rounded-full bg-[#5CD65C] transition-shadow ${
+            editing ? "ring-4 ring-[#5CD65C]/40" : ""
+          }`}
+        >
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M5 12.5l4.5 4.5L19 7.5" />
+          </svg>
+        </button>
 
         {editing ? (
           <textarea
